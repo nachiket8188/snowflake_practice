@@ -28,7 +28,7 @@ SHOW USERS;
 CREATE OR REPLACE SECRET my_git_secret
   TYPE = password
   USERNAME = 'nachiket8188'
-  PASSWORD = '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';
+  PASSWORD = '*****************';
   /* 
   The password is not password to the Github account rather a PAT (Personal Access Token) you generate for that account. The PAT from previous usage might not work and may result in "Failed to access the Git Repository. Operation 'clone' is not authorized." error. If that happens, generate a new PAT in Github Developer Settings and use that one.
   */
