@@ -8,15 +8,804 @@ In addition to this, after having created all the tables within all the schemas 
 
 */
 
+/* This command is used to enable functioning of SnowConvert AI. */
 ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'AWS_US';
+
+create
+or replace database ADVENTUREWORKS COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
 
 USE DATABASE ADVENTUREWORKS;
 
-select * from dbo.errorlog;
+create
+or replace schema ADVENTUREWORKS.DBO COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
 
-select * from person.person;
+create
+or replace TABLE ADVENTUREWORKS.DBO.AWBUILDVERSION (
+    SYSTEMINFORMATIONID NUMBER (38, 0) NOT NULL,
+    "Database Version" VARCHAR(50) NOT NULL,
+    VERSIONDATE TIMESTAMP_NTZ (3) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
 
-select * from humanresources.employeedepartmenthistory;
+create
+or replace TABLE ADVENTUREWORKS.DBO.DATABASELOG (
+    DATABASELOGID NUMBER (38, 0) NOT NULL,
+    POSTTIME TIMESTAMP_NTZ (3) NOT NULL,
+    DATABASEUSER VARCHAR(128) NOT NULL,
+    EVENT VARCHAR(128) NOT NULL,
+    "Schema" VARCHAR(128),
+    OBJECT VARCHAR(128),
+    TSQL VARCHAR(16777216) NOT NULL,
+    XMLEVENT VARIANT NOT NULL
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.DBO.ERRORLOG (
+    ERRORLOGID NUMBER (38, 0) NOT NULL,
+    ERRORTIME TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3)),
+    USERNAME VARCHAR(128) NOT NULL,
+    ERRORNUMBER NUMBER (38, 0) NOT NULL,
+    ERRORSEVERITY NUMBER (38, 0),
+    ERRORSTATE NUMBER (38, 0),
+    ERRORPROCEDURE VARCHAR(252),
+    ERRORLINE NUMBER (38, 0),
+    ERRORMESSAGE VARCHAR(8000) NOT NULL
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace schema ADVENTUREWORKS.HUMANRESOURCES COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.HUMANRESOURCES.DEPARTMENT (
+    DEPARTMENTID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    GROUPNAME VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.HUMANRESOURCES.EMPLOYEE (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    NATIONALIDNUMBER VARCHAR(30) NOT NULL,
+    LOGINID VARCHAR(512) NOT NULL,
+    ORGANIZATIONNODE VARCHAR(16777216),
+    ORGANIZATIONLEVEL NUMBER (38, 0),
+    JOBTITLE VARCHAR(100) NOT NULL,
+    BIRTHDATE DATE NOT NULL,
+    MARITALSTATUS VARCHAR(2) NOT NULL,
+    GENDER VARCHAR(2) NOT NULL,
+    HIREDATE DATE NOT NULL,
+    SALARIEDFLAG BOOLEAN NOT NULL DEFAULT TRUE,
+    VACATIONHOURS NUMBER (38, 0) NOT NULL DEFAULT 0,
+    SICKLEAVEHOURS NUMBER (38, 0) NOT NULL DEFAULT 0,
+    CURRENTFLAG BOOLEAN NOT NULL DEFAULT TRUE,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.HUMANRESOURCES.EMPLOYEEDEPARTMENTHISTORY (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    DEPARTMENTID NUMBER (38, 0) NOT NULL,
+    SHIFTID NUMBER (38, 0) NOT NULL,
+    STARTDATE DATE NOT NULL,
+    ENDDATE DATE,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.HUMANRESOURCES.EMPLOYEEPAYHISTORY (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    RATECHANGEDATE TIMESTAMP_NTZ (3) NOT NULL,
+    RATE NUMBER (38, 4) NOT NULL,
+    PAYFREQUENCY NUMBER (38, 0) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.HUMANRESOURCES.JOBCANDIDATE (
+    JOBCANDIDATEID NUMBER (38, 0) NOT NULL,
+    BUSINESSENTITYID NUMBER (38, 0),
+    RESUME VARIANT,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.HUMANRESOURCES.SHIFT (
+    SHIFTID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    STARTTIME TIME(7) NOT NULL,
+    ENDTIME TIME(7) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace schema ADVENTUREWORKS.PERSON COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.ADDRESS (
+    ADDRESSID NUMBER (38, 0) NOT NULL,
+    ADDRESSLINE1 VARCHAR(120) NOT NULL,
+    ADDRESSLINE2 VARCHAR(120),
+    CITY VARCHAR(60) NOT NULL,
+    STATEPROVINCEID NUMBER (38, 0) NOT NULL,
+    POSTALCODE VARCHAR(30) NOT NULL,
+    SPATIALLOCATION GEOGRAPHY,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.ADDRESSTYPE (
+    ADDRESSTYPEID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.BUSINESSENTITY (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.BUSINESSENTITYADDRESS (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    ADDRESSID NUMBER (38, 0) NOT NULL,
+    ADDRESSTYPEID NUMBER (38, 0) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.BUSINESSENTITYCONTACT (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    PERSONID NUMBER (38, 0) NOT NULL,
+    CONTACTTYPEID NUMBER (38, 0) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.CONTACTTYPE (
+    CONTACTTYPEID NUMBER (38, 0) NOT NULL,
+    NAME VARIANT NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.COUNTRYREGION (
+    COUNTRYREGIONCODE VARCHAR(6) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.EMAILADDRESS (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    EMAILADDRESSID NUMBER (38, 0) NOT NULL,
+    EMAILADDRESS VARCHAR(100),
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.PASSWORD (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    PASSWORDHASH VARCHAR(128) NOT NULL,
+    PASSWORDSALT VARCHAR(10) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.PERSON (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    PERSONTYPE VARCHAR(4) NOT NULL,
+    NAMESTYLE NUMBER (38, 0) NOT NULL DEFAULT 0,
+    TITLE VARCHAR(16),
+    FIRSTNAME VARCHAR(50) NOT NULL,
+    MIDDLENAME VARCHAR(50),
+    LASTNAME VARCHAR(50) NOT NULL,
+    SUFFIX VARCHAR(20),
+    EMAILPROMOTION NUMBER (38, 0) NOT NULL DEFAULT 0,
+    ADDITIONALCONTACTINFO VARIANT,
+    DEMOGRAPHICS VARIANT,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.PERSONPHONE (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    PHONENUMBER VARCHAR(16777216) NOT NULL,
+    PHONENUMBERTYPEID NUMBER (38, 0) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.PHONENUMBERTYPE (
+    PHONENUMBERTYPEID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PERSON.STATEPROVINCE (
+    STATEPROVINCEID NUMBER (38, 0) NOT NULL,
+    STATEPROVINCECODE VARCHAR(6) NOT NULL,
+    COUNTRYREGIONCODE VARCHAR(6) NOT NULL,
+    ISONLYSTATEPROVINCEFLAG BOOLEAN NOT NULL DEFAULT TRUE,
+    NAME VARCHAR(50) NOT NULL,
+    TERRITORYID NUMBER (38, 0) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace schema ADVENTUREWORKS.PRODUCTION COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.BILLOFMATERIALS (
+    BILLOFMATERIALSID NUMBER (38, 0) NOT NULL,
+    PRODUCTASSEMBLYID NUMBER (38, 0),
+    COMPONENTID NUMBER (38, 0) NOT NULL,
+    STARTDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3)),
+    ENDDATE TIMESTAMP_NTZ (3),
+    UNITMEASURECODE VARCHAR(6) NOT NULL,
+    BOMLEVEL NUMBER (38, 0) NOT NULL,
+    PERASSEMBLYQTY NUMBER (8, 2) NOT NULL DEFAULT 1,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.CULTURE (
+    CULTUREID VARCHAR(12) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.DOCUMENT (
+    DOCUMENTNODE VARCHAR(16777216) NOT NULL,
+    DOCUMENTLEVEL NUMBER (38, 0),
+    TITLE VARCHAR(100) NOT NULL,
+    OWNER NUMBER (38, 0) NOT NULL,
+    FOLDERFLAG BOOLEAN NOT NULL DEFAULT FALSE,
+    FILENAME VARCHAR(800) NOT NULL,
+    FILEEXTENSION VARCHAR(16) NOT NULL,
+    REVISION VARCHAR(10) NOT NULL,
+    CHANGENUMBER NUMBER (38, 0) NOT NULL DEFAULT 0,
+    STATUS NUMBER (38, 0) NOT NULL,
+    DOCUMENTSUMMARY VARCHAR(16777216),
+    DOCUMENT BINARY(8388608),
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.ILLUSTRATION (
+    ILLUSTRATIONID NUMBER (38, 0) NOT NULL,
+    DIAGRAM VARIANT,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.LOCATION (
+    LOCATIONID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    COSTRATE NUMBER (38, 4) NOT NULL DEFAULT 0,
+    AVAILABILITY NUMBER (8, 2) NOT NULL DEFAULT 0,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCT (
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    PRODUCTNUMBER VARCHAR(50) NOT NULL,
+    MAKEFLAG BOOLEAN NOT NULL DEFAULT TRUE,
+    FINISHEDGOODSFLAG BOOLEAN NOT NULL DEFAULT TRUE,
+    COLOR VARCHAR(30),
+    SAFETYSTOCKLEVEL NUMBER (38, 0) NOT NULL,
+    REORDERPOINT NUMBER (38, 0) NOT NULL,
+    STANDARDCOST NUMBER (38, 4) NOT NULL,
+    LISTPRICE NUMBER (38, 4) NOT NULL,
+    SIZE VARCHAR(10),
+    SIZEUNITMEASURECODE VARCHAR(6),
+    WEIGHTUNITMEASURECODE VARCHAR(6),
+    WEIGHT NUMBER (8, 2),
+    DAYSTOMANUFACTURE NUMBER (38, 0) NOT NULL,
+    PRODUCTLINE VARCHAR(4),
+    CLASS VARCHAR(4),
+    STYLE VARCHAR(4),
+    PRODUCTSUBCATEGORYID NUMBER (38, 0),
+    PRODUCTMODELID NUMBER (38, 0),
+    SELLSTARTDATE TIMESTAMP_NTZ (9) NOT NULL,
+    SELLENDDATE TIMESTAMP_NTZ (9),
+    DISCONTINUEDDATE TIMESTAMP_NTZ (9),
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTCATEGORY (
+    PRODUCTCATEGORYID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTCOSTHISTORY (
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    STARTDATE TIMESTAMP_NTZ (3) NOT NULL,
+    ENDDATE TIMESTAMP_NTZ (3),
+    STANDARDCOST NUMBER (38, 4) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTDESCRIPTION (
+    PRODUCTDESCRIPTIONID NUMBER (38, 0) NOT NULL,
+    DESCRIPTION VARCHAR(800) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTDOCUMENT (
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    DOCUMENTNODE VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTINVENTORY (
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    LOCATIONID NUMBER (38, 0) NOT NULL,
+    SHELF VARCHAR(20) NOT NULL,
+    BIN NUMBER (38, 0) NOT NULL,
+    QUANTITY NUMBER (38, 0) NOT NULL DEFAULT 0,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTLISTPRICEHISTORY (
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    STARTDATE TIMESTAMP_NTZ (3) NOT NULL,
+    ENDDATE TIMESTAMP_NTZ (3),
+    LISTPRICE NUMBER (38, 4) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTMODEL (
+    PRODUCTMODELID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    CATALOGDESCRIPTION VARCHAR(16777216),
+    INSTRUCTIONS VARCHAR(16777216),
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTMODELILLUSTRATION (
+    PRODUCTMODELID NUMBER (38, 0) NOT NULL,
+    ILLUSTRATIONID NUMBER (38, 0) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTMODELPRODUCTDESCRIPTIONCULTURE (
+    PRODUCTMODELID NUMBER (38, 0) NOT NULL,
+    PRODUCTDESCRIPTIONID NUMBER (38, 0) NOT NULL,
+    CULTUREID VARCHAR(12) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTPHOTO (
+    PRODUCTPHOTOID NUMBER (38, 0) NOT NULL,
+    THUMBNAILPHOTO BINARY(8388608),
+    THUMBNAILPHOTOFILENAME VARCHAR(100),
+    LARGEPHOTO BINARY(8388608),
+    LARGEPHOTOFILENAME VARCHAR(100),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTPRODUCTPHOTO (
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    PRODUCTPHOTOID NUMBER (38, 0) NOT NULL,
+    "Primary" NUMBER (38, 0) NOT NULL DEFAULT 1,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTREVIEW (
+    PRODUCTREVIEWID NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    REVIEWERNAME VARCHAR(16777216) NOT NULL,
+    REVIEWDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9)),
+    EMAILADDRESS VARCHAR(100) NOT NULL,
+    RATING NUMBER (38, 0) NOT NULL,
+    COMMENTS VARCHAR(7700),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.PRODUCTSUBCATEGORY (
+    PRODUCTSUBCATEGORYID NUMBER (38, 0) NOT NULL,
+    PRODUCTCATEGORYID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.SCRAPREASON (
+    SCRAPREASONID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.TRANSACTIONHISTORY (
+    TRANSACTIONID NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    REFERENCEORDERID NUMBER (38, 0) NOT NULL,
+    REFERENCEORDERLINEID NUMBER (38, 0) NOT NULL DEFAULT 0,
+    TRANSACTIONDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3)),
+    TRANSACTIONTYPE VARCHAR(2) NOT NULL,
+    QUANTITY NUMBER (38, 0) NOT NULL,
+    ACTUALCOST NUMBER (38, 4) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.TRANSACTIONHISTORYARCHIVE (
+    TRANSACTIONID NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    REFERENCEORDERID NUMBER (38, 0) NOT NULL,
+    REFERENCEORDERLINEID NUMBER (38, 0) NOT NULL DEFAULT 0,
+    TRANSACTIONDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9)),
+    TRANSACTIONTYPE VARCHAR(2) NOT NULL,
+    QUANTITY NUMBER (38, 0) NOT NULL,
+    ACTUALCOST NUMBER (38, 4) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.UNITMEASURE (
+    UNITMEASURECODE VARCHAR(6) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.WORKORDER (
+    WORKORDERID NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    ORDERQTY NUMBER (38, 0) NOT NULL,
+    STOCKEDQTY NUMBER (38, 0) NOT NULL,
+    SCRAPPEDQTY NUMBER (38, 0) NOT NULL,
+    STARTDATE TIMESTAMP_NTZ (3) NOT NULL,
+    ENDDATE TIMESTAMP_NTZ (3),
+    DUEDATE TIMESTAMP_NTZ (3) NOT NULL,
+    SCRAPREASONID NUMBER (38, 0),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PRODUCTION.WORKORDERROUTING (
+    WORKORDERID NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    OPERATIONSEQUENCE NUMBER (38, 0) NOT NULL,
+    LOCATIONID NUMBER (38, 0) NOT NULL,
+    SCHEDULEDSTARTDATE TIMESTAMP_NTZ (3) NOT NULL,
+    SCHEDULEDENDDATE TIMESTAMP_NTZ (3) NOT NULL,
+    ACTUALSTARTDATE TIMESTAMP_NTZ (3),
+    ACTUALENDDATE TIMESTAMP_NTZ (3),
+    ACTUALRESOURCEHRS NUMBER (9, 4),
+    PLANNEDCOST NUMBER (38, 4) NOT NULL,
+    ACTUALCOST NUMBER (38, 4),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace schema ADVENTUREWORKS.PUBLIC;
+
+create
+or replace schema ADVENTUREWORKS.PURCHASING COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PURCHASING.PRODUCTVENDOR (
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    AVERAGELEADTIME NUMBER (38, 0) NOT NULL,
+    STANDARDPRICE NUMBER (38, 4) NOT NULL,
+    LASTRECEIPTCOST NUMBER (38, 4),
+    LASTRECEIPTDATE TIMESTAMP_NTZ (3),
+    MINORDERQTY NUMBER (38, 0) NOT NULL,
+    MAXORDERQTY NUMBER (38, 0) NOT NULL,
+    ONORDERQTY NUMBER (38, 0),
+    UNITMEASURECODE VARCHAR(6) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PURCHASING.PURCHASEORDERDETAIL (
+    PURCHASEORDERID NUMBER (38, 0) NOT NULL,
+    PURCHASEORDERDETAILID NUMBER (38, 0) NOT NULL,
+    DUEDATE TIMESTAMP_NTZ (3) NOT NULL,
+    ORDERQTY NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    UNITPRICE NUMBER (38, 4) NOT NULL,
+    LINETOTAL NUMBER (38, 4) NOT NULL,
+    RECEIVEDQTY NUMBER (8, 2) NOT NULL,
+    REJECTEDQTY NUMBER (8, 2) NOT NULL,
+    STOCKEDQTY NUMBER (9, 2) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PURCHASING.PURCHASEORDERHEADER (
+    PURCHASEORDERID NUMBER (38, 0) NOT NULL,
+    REVISIONNUMBER NUMBER (38, 0) NOT NULL DEFAULT 0,
+    STATUS NUMBER (38, 0) NOT NULL DEFAULT 1,
+    EMPLOYEEID NUMBER (38, 0) NOT NULL,
+    VENDORID NUMBER (38, 0) NOT NULL,
+    SHIPMETHODID NUMBER (38, 0) NOT NULL,
+    ORDERDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3)),
+    SHIPDATE TIMESTAMP_NTZ (3),
+    SUBTOTAL NUMBER (38, 4) NOT NULL DEFAULT 0,
+    TAXAMT NUMBER (38, 4) NOT NULL DEFAULT 0,
+    FREIGHT NUMBER (38, 4) NOT NULL DEFAULT 0,
+    TOTALDUE NUMBER (38, 4) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PURCHASING.SHIPMETHOD (
+    SHIPMETHODID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    SHIPBASE NUMBER (38, 4) NOT NULL DEFAULT 0,
+    SHIPRATE NUMBER (38, 4) NOT NULL DEFAULT 0,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.PURCHASING.VENDOR (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    ACCOUNTNUMBER VARCHAR(16777216) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    CREDITRATING NUMBER (38, 0) NOT NULL,
+    PREFERREDVENDORSTATUS BOOLEAN NOT NULL DEFAULT TRUE,
+    ACTIVEFLAG BOOLEAN NOT NULL DEFAULT TRUE,
+    PURCHASINGWEBSERVICEURL VARCHAR(16777216),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace schema ADVENTUREWORKS.SALES COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.COUNTRYREGIONCURRENCY (
+    COUNTRYREGIONCODE VARCHAR(6) NOT NULL,
+    CURRENCYCODE VARCHAR(6) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.CREDITCARD (
+    CREDITCARDID NUMBER (38, 0) NOT NULL,
+    CARDTYPE VARCHAR(100) NOT NULL,
+    CARDNUMBER VARCHAR(50) NOT NULL,
+    EXPMONTH NUMBER (38, 0) NOT NULL,
+    EXPYEAR NUMBER (38, 0) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.CURRENCY (
+    CURRENCYCODE VARCHAR(1) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.CURRENCYRATE (
+    CURRENCYRATEID NUMBER (38, 0) NOT NULL,
+    CURRENCYRATEDATE TIMESTAMP_NTZ (3) NOT NULL,
+    FROMCURRENCYCODE VARCHAR(6) NOT NULL,
+    TOCURRENCYCODE VARCHAR(6) NOT NULL,
+    AVERAGERATE NUMBER (38, 4) NOT NULL,
+    ENDOFDAYRATE NUMBER (38, 4) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.CUSTOMER (
+    CUSTOMERID NUMBER (38, 0) NOT NULL,
+    PERSONID NUMBER (38, 0),
+    STOREID NUMBER (38, 0),
+    TERRITORYID NUMBER (38, 0),
+    ACCOUNTNUMBER VARCHAR(10) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.PERSONCREDITCARD (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    CREDITCARDID NUMBER (38, 0) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESORDERDETAIL (
+    SALESORDERID NUMBER (38, 0) NOT NULL,
+    SALESORDERDETAILID NUMBER (38, 0) NOT NULL,
+    CARRIERTRACKINGNUMBER VARCHAR(50),
+    ORDERQTY NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    SPECIALOFFERID NUMBER (38, 0) NOT NULL,
+    UNITPRICE NUMBER (38, 4) NOT NULL,
+    UNITPRICEDISCOUNT NUMBER (38, 4) NOT NULL DEFAULT 0,
+    LINETOTAL NUMBER (38, 6) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESORDERHEADER (
+    SALESORDERID NUMBER (38, 0) NOT NULL,
+    REVISIONNUMBER NUMBER (38, 0) NOT NULL DEFAULT 0,
+    ORDERDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9)),
+    DUEDATE TIMESTAMP_NTZ (9) NOT NULL,
+    SHIPDATE TIMESTAMP_NTZ (9),
+    STATUS NUMBER (38, 0) NOT NULL DEFAULT 1,
+    ONLINEORDERFLAG BOOLEAN NOT NULL DEFAULT TRUE,
+    SALESORDERNUMBER VARCHAR(50) NOT NULL,
+    PURCHASEORDERNUMBER VARCHAR(16777216),
+    ACCOUNTNUMBER VARCHAR(16777216),
+    CUSTOMERID NUMBER (38, 0) NOT NULL,
+    SALESPERSONID NUMBER (38, 0),
+    TERRITORYID NUMBER (38, 0),
+    BILLTOADDRESSID NUMBER (38, 0) NOT NULL,
+    SHIPTOADDRESSID NUMBER (38, 0) NOT NULL,
+    SHIPMETHODID NUMBER (38, 0) NOT NULL,
+    CREDITCARDID NUMBER (38, 0),
+    CREDITCARDAPPROVALCODE VARCHAR(15),
+    CURRENCYRATEID NUMBER (38, 0),
+    SUBTOTAL NUMBER (38, 4) NOT NULL DEFAULT 0,
+    TAXAMT NUMBER (38, 4) NOT NULL DEFAULT 0,
+    FREIGHT NUMBER (38, 4) NOT NULL DEFAULT 0,
+    TOTALDUE NUMBER (38, 4) NOT NULL,
+    COMMENT VARCHAR(256),
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESORDERHEADERSALESREASON (
+    SALESORDERID NUMBER (38, 0) NOT NULL,
+    SALESREASONID NUMBER (38, 0) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESPERSON (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    TERRITORYID NUMBER (38, 0),
+    SALESQUOTA NUMBER (38, 4),
+    BONUS NUMBER (38, 4) NOT NULL DEFAULT 0,
+    COMMISSIONPCT NUMBER (38, 4) NOT NULL DEFAULT 0,
+    SALESYTD NUMBER (38, 4) NOT NULL DEFAULT 0,
+    SALESLASTYEAR NUMBER (38, 4) NOT NULL DEFAULT 0,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESPERSONQUOTAHISTORY (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    QUOTADATE TIMESTAMP_NTZ (3) NOT NULL,
+    SALESQUOTA NUMBER (38, 4) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESREASON (
+    SALESREASONID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    REASONTYPE VARCHAR(16777216) NOT NULL,
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESTAXRATE (
+    SALESTAXRATEID NUMBER (38, 0) NOT NULL,
+    STATEPROVINCEID NUMBER (38, 0) NOT NULL,
+    TAXTYPE NUMBER (38, 0) NOT NULL,
+    TAXRATE NUMBER (38, 4) NOT NULL DEFAULT 0,
+    NAME VARCHAR(16777216) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESTERRITORY (
+    TERRITORYID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    COUNTRYREGIONCODE VARCHAR(6) NOT NULL,
+    "Group" VARCHAR(100) NOT NULL,
+    SALESYTD NUMBER (38, 4) NOT NULL DEFAULT 0,
+    SALESLASTYEAR NUMBER (38, 4) NOT NULL DEFAULT 0,
+    COSTYTD NUMBER (38, 4) NOT NULL DEFAULT 0,
+    COSTLASTYEAR NUMBER (38, 4) NOT NULL DEFAULT 0,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (9) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (9))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SALESTERRITORYHISTORY (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    TERRITORYID NUMBER (38, 0) NOT NULL,
+    STARTDATE TIMESTAMP_NTZ (3) NOT NULL,
+    ENDDATE TIMESTAMP_NTZ (3),
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SHOPPINGCARTITEM (
+    SHOPPINGCARTITEMID NUMBER (38, 0) NOT NULL,
+    SHOPPINGCARTID VARCHAR(100) NOT NULL,
+    QUANTITY NUMBER (38, 0) NOT NULL DEFAULT 1,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    DATECREATED TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3)),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SPECIALOFFER (
+    SPECIALOFFERID NUMBER (38, 0) NOT NULL,
+    DESCRIPTION VARCHAR(510) NOT NULL,
+    DISCOUNTPCT NUMBER (38, 4) NOT NULL DEFAULT 0,
+    TYPE VARCHAR(100) NOT NULL,
+    CATEGORY VARCHAR(100) NOT NULL,
+    STARTDATE TIMESTAMP_NTZ (3) NOT NULL,
+    ENDDATE TIMESTAMP_NTZ (3) NOT NULL,
+    MINQTY NUMBER (38, 0) NOT NULL DEFAULT 0,
+    MAXQTY NUMBER (38, 0),
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.SPECIALOFFERPRODUCT (
+    SPECIALOFFERID NUMBER (38, 0) NOT NULL,
+    PRODUCTID NUMBER (38, 0) NOT NULL,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
+
+create
+or replace TABLE ADVENTUREWORKS.SALES.STORE (
+    BUSINESSENTITYID NUMBER (38, 0) NOT NULL,
+    NAME VARCHAR(16777216) NOT NULL,
+    SALESPERSONID NUMBER (38, 0),
+    DEMOGRAPHICS VARIANT,
+    ROWGUID VARCHAR(16777216) NOT NULL DEFAULT UUID_STRING (),
+    MODIFIEDDATE TIMESTAMP_NTZ (3) NOT NULL DEFAULT CAST(CURRENT_TIMESTAMP() AS TIMESTAMP_NTZ (3))
+) COMMENT = '{ \"origin\": \"sf_sc\", \"name\": \"snowconvert\", \"version\": {  \"major\": 1,  \"minor\": 20,  \"patch\": \"10.0\" }, \"attributes\": {  \"component\": \"transact\",  \"convertedOn\": \"11/13/2025\",  \"domain\": \"gyknife\",  \"migrationid\": \"aHyaAYUPyH+Bfvdm7wR0Mw==\" }}';
 
 CREATE OR REPLACE TABLE Production.ScrapReason (
     ScrapReasonID SMALLINT NOT NULL,
@@ -244,7 +1033,7 @@ select top 10 * from information_schema.tables;
 select get_ddl('DATABASE', 'AdventureWorks', TRUE);
 
 select table_schema, COUNT(*) Table_Count from information_schema.tables
-where table_catalog =  'ADVENTUREWORKS' and table_schema <> 'INFORMATION_SCHEMA'
+where table_catalog =  'ADVENTUREWORKS' and table_schema <> 'INFORMATION_SCHEMA' and table_type = 'BASE TABLE'
 group by table_schema
 order by 1;
 
@@ -275,3 +1064,4 @@ NULL,
 )
 COMMENT = '{ "origin": "sf_sc", "name": "snowconvert", "version": {  "major": 1,  "minor": 20,  "patch": "10.0" }, "attributes": {  "component": "transact",  "convertedOn": "11/13/2025",  "domain": "gyknife",  "migrationid": "aHyaAYUPyH+Bfvdm7wR0Mw==" }}'
 ;
+
