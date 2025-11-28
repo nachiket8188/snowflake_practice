@@ -1,62 +1,14 @@
-select distinct salespersonid
-from sales.salesorderheader
-order by 1 desc;
+/* All scripts in this file are for the purpose of demonstrating understanding of TASKS & STREAMS features in Snowflake. */
 
-select SalesPersonID, COUNT(*) Count from Sales.SalesOrderHeader
--- where SalesPersonID is NULL 
--- where SalesOrderID = 75084
--- order by OrderDate desc
-group by SalesPersonID
-order by 2 DESC
-;
-
-select * from information_schema.columns where lower(table_name) = 'salesorderheader';
-
-INSERT INTO sales.salesorderheader (SALESORDERID
-,REVISIONNUMBER
-,ORDERDATE
-,DUEDATE
-,SHIPDATE
-,STATUS
-,ONLINEORDERFLAG
-,SALESORDERNUMBER
-,PURCHASEORDERNUMBER
-,ACCOUNTNUMBER
-,CUSTOMERID
-,SALESPERSONID
-,TERRITORYID
-,BILLTOADDRESSID
-,SHIPTOADDRESSID
-,SHIPMETHODID
-,CREDITCARDID
-,CREDITCARDAPPROVALCODE
-,CURRENCYRATEID
-,SUBTOTAL
-,TAXAMT
-,FREIGHT
-,TOTALDUE
-,COMMENT
-,ROWGUID
-,MODIFIEDDATE) values
-(75124,	8,	'2014-05-31',	'2014-06-12', '2014-06-07', 5,	FALSE,	'SO43659',	'PO522145787',	'10-4020-000676',	'29825', 	276,	5,	985,	985,	5,	16281,	'105041Vi84182',NULL,189.9700,	20565.6206,	1971.5149,	125000,NULL,		'79b65321-39ca-4115-9cba-8fe0903e12e6',	'2011-06-07');
-
-select * from table(INFORMATION_SCHEMA.TASK_HISTORY()) order by completed_time desc;
-
-delete from sales.salesorderheader where salesorderid = '75124';
-
+/* Initial script I ran to check if salesorderid is indeed Primary Key for salesOrderHeader table */
 select top 10 * from sales.salesorderheader order by salesorderid desc
 where salesorderid = 75084;
 
+/* To check that there can be multiple occurrences of same salesorderid in salesOrderDetail table */
 select top 10 * from sales.salesorderdetail
 where salesorderid = 75084;
 
-ALTER WAREHOUSE compute_learning SET WAREHOUSE_SIZE = xsmall;
-
-select top 10 * from sales.salesperson;
-
-select top 10 * from HUMANRESOURCES.EMPLOYEE;
-
-/* Below query will work with any DB. */
+/* Below query will work with any DB. I used this query in the definition of Stored Procedure that is being created down below. */
 with
     salespeople as (
         select
@@ -161,30 +113,102 @@ where
     RETURN 'Success';
 END;
 
+/* Testing Stored Procedure */
 call update_2014_top_salespeople();
 
-select * from "2014_top_salespeople" order by salesperson_rank;
-
+/* Creating STREAM object on table salesOrderHeader to detect CDC */
 CREATE OR REPLACE STREAM sales_order_header_stream ON TABLE SALES.SALESORDERHEADER;
 
-show tasks;
-
-ALTER TASK TRIGGERED_BY_STREAM_TASK RESUME;
-
+/* Creating TASK to monitor STREAM and call Stored Procedure when desired condition is met. */
 CREATE OR REPLACE TASK TRIGGERED_BY_STREAM_TASK 
 WAREHOUSE = 'COMPUTE_LEARNING'
 WHEN SYSTEM$STREAM_HAS_DATA('sales_order_header_stream')
 AS
     call update_2014_top_salespeople();
 
-SELECT salespersonid, SUM(totaldue) as total_due
-FROM sales.salesorderheader
-WHERE DATE_PART(YEAR, orderdate) = 2014
-GROUP BY salespersonid
-ORDER BY total_due DESC
-LIMIT 10;
+/* By default, when a TASK is created, it's in SUSPENDED state. It needs to be RESUMEd. */
 
-ALTER WAREHOUSE COMPUTE_LEARNING SET WAREHOUSE_SIZE = '2x-large';
+show tasks;
 
-select MAX(orderdate) from sales.salesorderheader
-where salespersonid = 280 and DATE_PART(YEAR, orderdate) = 2014;
+ALTER TASK TRIGGERED_BY_STREAM_TASK RESUME;
+
+/* Check before CDC, whether the TASK has been triggered so far or not. Ideally, NOT. */
+
+select * from table(INFORMATION_SCHEMA.TASK_HISTORY()) order by completed_time desc;
+
+/* Check rankings of  Salespeople in the summary table. This will change after INSERT is successful and TASK is triggered.*/
+
+select * from "2014_top_salespeople" order by salesperson_rank;
+
+/* To get list of columns in salesOrderHeader table (to use in the INSERT statement below) order by their Ordinal Position */
+select * from information_schema.columns where lower(table_name) = 'salesorderheader';
+
+/* INSERTing this particular record changes the order of Salespeople in the TOP 10 list. The amount_due number has been specifically inflated to simulate that change. */
+
+INSERT INTO
+    sales.salesorderheader (
+        SALESORDERID,
+        REVISIONNUMBER,
+        ORDERDATE,
+        DUEDATE,
+        SHIPDATE,
+        STATUS,
+        ONLINEORDERFLAG,
+        SALESORDERNUMBER,
+        PURCHASEORDERNUMBER,
+        ACCOUNTNUMBER,
+        CUSTOMERID,
+        SALESPERSONID,
+        TERRITORYID,
+        BILLTOADDRESSID,
+        SHIPTOADDRESSID,
+        SHIPMETHODID,
+        CREDITCARDID,
+        CREDITCARDAPPROVALCODE,
+        CURRENCYRATEID,
+        SUBTOTAL,
+        TAXAMT,
+        FREIGHT,
+        TOTALDUE,
+        COMMENT,
+        ROWGUID,
+        MODIFIEDDATE
+    )
+values
+    (
+        75124,
+        8,
+        '2014-05-31',
+        '2014-06-12',
+        '2014-06-07',
+        5,
+        FALSE,
+        'SO43659',
+        'PO522145787',
+        '10-4020-000676',
+        '29825',
+        276,
+        5,
+        985,
+        985,
+        5,
+        16281,
+        '105041Vi84182',
+        NULL,
+        189.9700,
+        20565.6206,
+        1971.5149,
+        125000,
+        NULL,
+        '79b65321-39ca-4115-9cba-8fe0903e12e6',
+        '2011-06-07'
+    );
+
+/* Used this a few times when I had to test INSERTion effects again-and-again */
+/* delete from sales.salesorderheader where salesorderid = '75124'; */
+
+/* Run following commands to check and confirm that the TASK, in fact, ran as a result of CDC in the salesOrderHeader table. */
+
+select * from table(INFORMATION_SCHEMA.TASK_HISTORY()) order by completed_time desc;
+
+select * from "2014_top_salespeople" order by salesperson_rank;

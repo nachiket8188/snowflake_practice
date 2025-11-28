@@ -314,3 +314,30 @@ f.value:age::int as child_age,
 f.value:gender::string as child_gender
 from json_demo, lateral flatten(v:children) as f;
 -- same output
+
+/*
+PIVOT in Snowflake - Simple Demo.
+*/
+
+create table monthly_sales (empid number, amount number, month varchar(3));
+
+INSERT INTO monthly_sales
+ (empid, amount, month) VALUES
+    (1, 10000, 'JAN'), 
+    (1, 400, 'JAN'),
+    (2, 4500, 'JAN'),
+    (2, 35000, 'JAN'),
+    (1, 5000, 'FEB'),
+    (1, 3000, 'FEB'),
+    (2, 200, 'FEB'),
+    (2, 90500, 'FEB'),
+    (1, 6000, 'MAR'),
+    (1, 5000, 'MAR'),
+    (2, 2500, 'MAR'),
+    (2, 9500, 'MAR');
+
+select * from monthly_sales;
+
+select * from monthly_sales
+PIVOT(sum(amount) for month in ('JAN', 'FEB', 'MAR')) as p
+order by empid;
