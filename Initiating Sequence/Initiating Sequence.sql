@@ -25,7 +25,7 @@ SHOW USERS;
 
 /* Configure and enable Github Repo. access to replicate work from previous Snowflake Trial Account. */
 
-CREATE OR REPLACE SECRET my_git_secret
+CREATE OR REPLACE SECRET SNOWFLAKE_PRACTICE.PUBLIC.my_git_secret
   TYPE = password
   USERNAME = 'nachiket8188'
   PASSWORD = '*****************';
@@ -39,7 +39,7 @@ create or replace API INTEGRATION git_api_integration
     ALLOWED_AUTHENTICATION_SECRETS = (my_git_secret)
     ENABLED = TRUE;
 
-CREATE OR REPLACE GIT REPOSITORY snowflake_practice
+CREATE OR REPLACE GIT REPOSITORY SNOWFLAKE_PRACTICE.PUBLIC.snowflake_practice
     API_INTEGRATION = git_api_integration
     ORIGIN = 'https://github.com/nachiket8188/snowflake_practice.git'
     GIT_CREDENTIALS = my_git_secret;

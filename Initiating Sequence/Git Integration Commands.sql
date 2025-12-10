@@ -6,7 +6,7 @@ as I switch to the next Trial account of Snowflake.
 CREATE OR REPLACE SECRET my_git_secret
   TYPE = password
   USERNAME = 'nachiket8188'
-  PASSWORD = '************************';
+  PASSWORD = '_REMOVED';
   /* 
   The password is not password to the Github account rather a PAT (Personal Access Token) you generate for that       account. 
   */
@@ -14,7 +14,7 @@ CREATE OR REPLACE SECRET my_git_secret
 create or replace API INTEGRATION git_api_integration
     API_PROVIDER = git_https_api
     API_ALLOWED_PREFIXES = ('https://github.com/nachiket8188')
-    ALLOWED_AUTHENTICATION_SECRETS = (my_git_secret)
+    ALLOWED_AUTHENTICATION_SECRETS = (SNOWFLAKE_LEARNING_DB.PUBLIC.MY_GIT_SECRET)
     ENABLED = TRUE;
 
 CREATE OR REPLACE GIT REPOSITORY snowflake_practice
@@ -22,4 +22,8 @@ CREATE OR REPLACE GIT REPOSITORY snowflake_practice
     ORIGIN = 'https://github.com/nachiket8188/snowflake_practice.git'
     GIT_CREDENTIALS = my_git_secret;
 
-select getdate();    
+select getdate();
+
+describe API INTEGRATION git_api_integration;
+
+SHOW SECRETS;

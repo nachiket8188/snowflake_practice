@@ -341,3 +341,35 @@ select * from monthly_sales;
 select * from monthly_sales
 PIVOT(sum(amount) for month in ('JAN', 'FEB', 'MAR')) as p
 order by empid;
+
+-- Create the PURCHASES table
+CREATE OR REPLACE TABLE PURCHASES (
+    customer_id INT,
+    product_id VARCHAR(10),
+    purchase_date DATE
+);
+
+-- Insert the data rows as shown in the image
+INSERT INTO PURCHASES (customer_id, product_id, purchase_date) VALUES
+(1, 'B', '2024-01-03'),
+(1, 'A', '2024-01-01'),
+(1, 'A', '2024-01-05'),
+(1, 'C', '2024-01-06'),
+(2, 'B', '2024-01-02'),
+(2, 'B', '2024-01-04');
+
+-- Optional: Verify the inserted data
+SELECT * FROM PURCHASES ORDER BY customer_id, purchase_date;
+
+/* ◆ 8. Calculate cumulative distinct product purchases per customer
+Objective:
+For each customer and each purchase date, calculate the cumulative count of distinct products purchased so far. */
+-- answer
+
+with cte_1 as 
+(
+    select p.*, COUNT(product_id) OVER(PARTITION BY customer_id, purchase_date ORDER BY purchase_date) 
+    as distinct_count
+    from PURCHASES p
+)
+select * from cte_1;
