@@ -6,7 +6,7 @@ as I switch to the next Trial account of Snowflake.
 CREATE OR REPLACE SECRET my_git_secret
   TYPE = password
   USERNAME = 'nachiket8188'
-  PASSWORD = '_REMOVED';
+  PASSWORD = '*************';
   /* 
   The password is not password to the Github account rather a PAT (Personal Access Token) you generate for that       account. 
   */
