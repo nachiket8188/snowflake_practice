@@ -64,7 +64,7 @@ CREATE OR REPLACE PIPE mypipe_for_snowpipe_demo AUTO_INGEST = TRUE AS
   FROM @s2_stage_for_snowpipe;
 
 SHOW PIPES;
-/* Copy the ARN from the 'notification_channel' column, to use in enxt step. */
+/* Copy the ARN from the 'notification_channel' column, to use in next step. */
 
 select * from SNOWFLAKE_PRACTICE.PUBLIC.SUPERSTORE_SALES;
 
