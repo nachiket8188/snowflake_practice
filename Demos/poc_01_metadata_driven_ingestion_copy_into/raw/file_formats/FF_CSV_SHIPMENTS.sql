@@ -5,8 +5,8 @@ USE SCHEMA RAW;
 CREATE OR REPLACE FILE FORMAT FF_CSV_SHIPMENTS
 TYPE = CSV
 FIELD_DELIMITER = ','
-PARSE_HEADER = TRUE
+PARSE_HEADER = TRUE /* This is required if one wants to use MATCH_BY_COLUMN_NAME param with COPY INTO command. */
 SKIP_BLANK_LINES = TRUE
-ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE
+ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE /* This was also required to ensure smooth operation of Dynamic COPY INTO commands with help of SCHEMA_EVOLUTION. */
 ;
 
