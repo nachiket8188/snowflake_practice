@@ -1,1 +1,2 @@
-select current_date();
+select
+    current_date();
