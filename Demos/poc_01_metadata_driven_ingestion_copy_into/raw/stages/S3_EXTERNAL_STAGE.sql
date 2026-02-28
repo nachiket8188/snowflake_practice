@@ -11,7 +11,7 @@ STORAGE_ALLOWED_LOCATIONS = ('s3://snowflakeloadingpurposes/poc_01_metadata_driv
 
 describe integration S3_INTEGRATION_FOR_POC_01;
 
-create stage EXT_STAGE_FORPOC_01
+create or replace stage EXT_STAGE_FOR_POC_01
 URL='s3://snowflakeloadingpurposes/poc_01_metadata_driven_ingestion/raw/'
 STORAGE_INTEGRATION=S3_INTEGRATION_FOR_POC_01
 DIRECTORY = (
