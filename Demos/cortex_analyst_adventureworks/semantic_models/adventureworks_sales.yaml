@@ -1,0 +1,886 @@
+name: adventureworks_sales_analytics
+description: >
+  AdventureWorks Sales Analytics semantic model for Cortex Analyst.
+  Enables natural language queries over sales transactions, products, 
+  customers, territories, and sales representatives data.
+  
+  Data Range: May 2011 - June 2014
+  Total Revenue: ~$109M across 31K+ orders
+
+tables:
+  - name: sales_orders
+    description: >
+      Sales order header information including order dates, totals, customer 
+      and territory assignments. Each row represents one sales order.
+    base_table:
+      database: ADVENTUREWORKS
+      schema: SALES
+      table: SALESORDERHEADER
+    primary_key:
+      columns:
+        - SALESORDERID
+    dimensions:
+      - name: order_id
+        synonyms:
+          - sales order id
+          - order number
+          - so number
+        description: Unique identifier for each sales order
+        expr: SALESORDERID
+        data_type: NUMBER
+
+      - name: sales_order_number
+        synonyms:
+          - order number
+          - so number
+          - order reference
+        description: Human-readable sales order number (e.g., SO43659)
+        expr: SALESORDERNUMBER
+        data_type: VARCHAR
+
+      - name: order_date
+        synonyms:
+          - date ordered
+          - purchase date
+          - transaction date
+        description: Date when the order was placed
+        expr: MODIFIEDDATE
+        data_type: TIMESTAMP
+
+      - name: order_status
+        synonyms:
+          - status
+          - order state
+        description: >
+          Order status code. 1=In Process, 2=Approved, 3=Backordered, 
+          4=Rejected, 5=Shipped, 6=Cancelled
+        expr: STATUS
+        data_type: NUMBER
+
+      - name: is_online_order
+        synonyms:
+          - online order
+          - web order
+          - e-commerce order
+        description: Whether the order was placed online (TRUE) or by a sales rep (FALSE)
+        expr: ONLINEORDERFLAG
+        data_type: BOOLEAN
+
+      - name: customer_id
+        description: Foreign key to customer table
+        expr: CUSTOMERID
+        data_type: NUMBER
+
+      - name: sales_person_id
+        synonyms:
+          - rep id
+          - salesperson id
+        description: Foreign key to sales person table (NULL for online orders)
+        expr: SALESPERSONID
+        data_type: NUMBER
+
+      - name: territory_id
+        description: Foreign key to sales territory table
+        expr: TERRITORYID
+        data_type: NUMBER
+
+    time_dimensions:
+      - name: order_timestamp
+        synonyms:
+          - order date
+          - transaction date
+          - purchase date
+        description: Timestamp when the order was placed
+        expr: MODIFIEDDATE
+        data_type: TIMESTAMP
+        unique: false
+
+    measures:
+      - name: subtotal
+        synonyms:
+          - order subtotal
+          - pre-tax total
+        description: Order subtotal before tax and freight
+        expr: SUBTOTAL
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: tax_amount
+        synonyms:
+          - tax
+          - sales tax
+        description: Tax amount charged on the order
+        expr: TAXAMT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: freight
+        synonyms:
+          - shipping
+          - shipping cost
+          - delivery cost
+        description: Freight/shipping charges
+        expr: FREIGHT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: total_due
+        synonyms:
+          - order total
+          - grand total
+          - amount due
+        description: Total amount due including subtotal, tax, and freight
+        expr: TOTALDUE
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: order_count
+        synonyms:
+          - number of orders
+          - total orders
+          - orders
+        description: Count of orders
+        expr: "1"
+        data_type: NUMBER
+        default_aggregation: sum
+
+  - name: order_details
+    description: >
+      Line-item details for each sales order. Contains product, quantity, 
+      pricing, and discount information. One order can have multiple line items.
+    base_table:
+      database: ADVENTUREWORKS
+      schema: SALES
+      table: SALESORDERDETAIL
+    primary_key:
+      columns:
+        - SALESORDERDETAILID
+    dimensions:
+      - name: order_detail_id
+        description: Unique identifier for each order line item
+        expr: SALESORDERDETAILID
+        data_type: NUMBER
+
+      - name: order_id
+        synonyms:
+          - sales order id
+        description: Foreign key to sales order header
+        expr: SALESORDERID
+        data_type: NUMBER
+
+      - name: product_id
+        description: Foreign key to product table
+        expr: PRODUCTID
+        data_type: NUMBER
+
+      - name: carrier_tracking_number
+        synonyms:
+          - tracking number
+          - shipment tracking
+        description: Carrier tracking number for the shipment
+        expr: CARRIERTRACKINGNUMBER
+        data_type: VARCHAR
+
+    time_dimensions:
+      - name: line_item_date
+        synonyms:
+          - order line date
+          - detail date
+        description: Date of the line item transaction
+        expr: MODIFIEDDATE
+        data_type: TIMESTAMP
+        unique: false
+
+    measures:
+      - name: quantity
+        synonyms:
+          - qty
+          - units
+          - order quantity
+          - items ordered
+        description: Number of units ordered
+        expr: ORDERQTY
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: unit_price
+        synonyms:
+          - price
+          - selling price
+          - item price
+        description: Price per unit at time of sale
+        expr: UNITPRICE
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: unit_price_discount
+        synonyms:
+          - discount
+          - discount amount
+        description: Discount applied per unit
+        expr: UNITPRICEDISCOUNT
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: line_total
+        synonyms:
+          - revenue
+          - line revenue
+          - line amount
+          - sales amount
+        description: Total revenue for this line item (quantity × price - discount)
+        expr: LINETOTAL
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: line_count
+        synonyms:
+          - line items
+          - order lines
+        description: Count of line items
+        expr: "1"
+        data_type: NUMBER
+        default_aggregation: sum
+
+  - name: products
+    description: >
+      Product catalog with names, categories, pricing, and attributes.
+      Products are organized into categories and subcategories.
+    base_table:
+      database: ADVENTUREWORKS
+      schema: PRODUCTION
+      table: PRODUCT
+    primary_key:
+      columns:
+        - PRODUCTID
+    dimensions:
+      - name: product_id
+        description: Unique identifier for each product
+        expr: PRODUCTID
+        data_type: NUMBER
+
+      - name: product_name
+        synonyms:
+          - name
+          - product
+          - item name
+        description: Product name
+        expr: NAME
+        data_type: VARCHAR
+
+      - name: product_number
+        synonyms:
+          - sku
+          - product code
+          - item number
+        description: Product SKU/number
+        expr: PRODUCTNUMBER
+        data_type: VARCHAR
+
+      - name: color
+        synonyms:
+          - product color
+        description: Product color
+        expr: COLOR
+        data_type: VARCHAR
+
+      - name: size
+        synonyms:
+          - product size
+        description: Product size
+        expr: SIZE
+        data_type: VARCHAR
+
+      - name: product_line
+        synonyms:
+          - line
+        description: >
+          Product line code. R=Road, M=Mountain, T=Touring, S=Standard
+        expr: PRODUCTLINE
+        data_type: VARCHAR
+
+      - name: product_class
+        synonyms:
+          - class
+        description: >
+          Product class. H=High, M=Medium, L=Low
+        expr: CLASS
+        data_type: VARCHAR
+
+      - name: product_style
+        synonyms:
+          - style
+        description: >
+          Product style. W=Womens, M=Mens, U=Universal
+        expr: STYLE
+        data_type: VARCHAR
+
+      - name: product_subcategory_id
+        description: Foreign key to product subcategory
+        expr: PRODUCTSUBCATEGORYID
+        data_type: NUMBER
+
+      - name: is_make_item
+        synonyms:
+          - manufactured in-house
+        description: Whether product is manufactured in-house (TRUE) or purchased (FALSE)
+        expr: MAKEFLAG
+        data_type: BOOLEAN
+
+      - name: is_finished_good
+        synonyms:
+          - sellable
+          - finished product
+        description: Whether product is a finished good that can be sold
+        expr: FINISHEDGOODSFLAG
+        data_type: BOOLEAN
+
+    measures:
+      - name: standard_cost
+        synonyms:
+          - cost
+          - product cost
+        description: Standard manufacturing/purchase cost
+        expr: STANDARDCOST
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: list_price
+        synonyms:
+          - price
+          - msrp
+          - retail price
+        description: List/retail price
+        expr: LISTPRICE
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: weight
+        synonyms:
+          - product weight
+        description: Product weight
+        expr: WEIGHT
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: days_to_manufacture
+        synonyms:
+          - lead time
+          - manufacturing time
+        description: Days required to manufacture
+        expr: DAYSTOMANUFACTURE
+        data_type: NUMBER
+        default_aggregation: avg
+
+  - name: product_categories
+    description: >
+      Top-level product categories: Bikes, Components, Clothing, Accessories
+    base_table:
+      database: ADVENTUREWORKS
+      schema: PRODUCTION
+      table: PRODUCTCATEGORY
+    primary_key:
+      columns:
+        - PRODUCTCATEGORYID
+    dimensions:
+      - name: category_id
+        description: Unique identifier for product category
+        expr: PRODUCTCATEGORYID
+        data_type: NUMBER
+
+      - name: category_name
+        synonyms:
+          - category
+          - product category
+        description: Product category name (Bikes, Components, Clothing, Accessories)
+        expr: NAME
+        data_type: VARCHAR
+
+  - name: product_subcategories
+    description: >
+      Product subcategories like Mountain Bikes, Road Bikes, Handlebars, etc.
+      Links products to their parent category.
+    base_table:
+      database: ADVENTUREWORKS
+      schema: PRODUCTION
+      table: PRODUCTSUBCATEGORY
+    primary_key:
+      columns:
+        - PRODUCTSUBCATEGORYID
+    dimensions:
+      - name: subcategory_id
+        description: Unique identifier for product subcategory
+        expr: PRODUCTSUBCATEGORYID
+        data_type: NUMBER
+
+      - name: subcategory_name
+        synonyms:
+          - subcategory
+          - product subcategory
+        description: Product subcategory name
+        expr: NAME
+        data_type: VARCHAR
+
+      - name: category_id
+        description: Foreign key to parent category
+        expr: PRODUCTCATEGORYID
+        data_type: NUMBER
+
+  - name: customers
+    description: >
+      Customer information linking persons or stores to territories.
+      Customers can be individuals (PersonID) or stores (StoreID).
+    base_table:
+      database: ADVENTUREWORKS
+      schema: SALES
+      table: CUSTOMER
+    primary_key:
+      columns:
+        - CUSTOMERID
+    dimensions:
+      - name: customer_id
+        synonyms:
+          - cust id
+        description: Unique identifier for each customer
+        expr: CUSTOMERID
+        data_type: NUMBER
+
+      - name: account_number
+        synonyms:
+          - customer account
+          - account
+        description: Customer account number
+        expr: ACCOUNTNUMBER
+        data_type: VARCHAR
+
+      - name: person_id
+        description: Foreign key to person table (for individual customers)
+        expr: PERSONID
+        data_type: NUMBER
+
+      - name: store_id
+        description: Foreign key to store table (for business customers)
+        expr: STOREID
+        data_type: NUMBER
+
+      - name: territory_id
+        description: Foreign key to sales territory
+        expr: TERRITORYID
+        data_type: NUMBER
+
+  - name: persons
+    description: >
+      Person details including names. Used for both customers and employees.
+      PersonType indicates role: EM=Employee, SP=Sales Person, IN=Individual Customer, etc.
+    base_table:
+      database: ADVENTUREWORKS
+      schema: PERSON
+      table: PERSON
+    primary_key:
+      columns:
+        - BUSINESSENTITYID
+    dimensions:
+      - name: person_id
+        synonyms:
+          - business entity id
+        description: Unique identifier for each person
+        expr: BUSINESSENTITYID
+        data_type: NUMBER
+
+      - name: first_name
+        synonyms:
+          - firstname
+          - given name
+        description: Person's first name
+        expr: FIRSTNAME
+        data_type: VARCHAR
+
+      - name: middle_name
+        description: Person's middle name
+        expr: MIDDLENAME
+        data_type: VARCHAR
+
+      - name: last_name
+        synonyms:
+          - lastname
+          - surname
+          - family name
+        description: Person's last name
+        expr: LASTNAME
+        data_type: VARCHAR
+
+      - name: full_name
+        synonyms:
+          - name
+          - person name
+        description: Person's full name
+        expr: CONCAT(FIRSTNAME, ' ', COALESCE(MIDDLENAME || ' ', ''), LASTNAME)
+        data_type: VARCHAR
+
+      - name: person_type
+        synonyms:
+          - type
+          - role
+        description: >
+          Person type code. SC=Store Contact, IN=Individual Customer, 
+          SP=Sales Person, EM=Employee, VC=Vendor Contact, GC=General Contact
+        expr: PERSONTYPE
+        data_type: VARCHAR
+
+      - name: title
+        synonyms:
+          - prefix
+          - salutation
+        description: Person's title (Mr., Ms., Dr., etc.)
+        expr: TITLE
+        data_type: VARCHAR
+
+  - name: sales_territories
+    description: >
+      Geographic sales territories with YTD and prior year sales performance.
+      Territories are grouped by region (North America, Europe, Pacific).
+    base_table:
+      database: ADVENTUREWORKS
+      schema: SALES
+      table: SALESTERRITORY
+    primary_key:
+      columns:
+        - TERRITORYID
+    dimensions:
+      - name: territory_id
+        description: Unique identifier for each territory
+        expr: TERRITORYID
+        data_type: NUMBER
+
+      - name: territory_name
+        synonyms:
+          - territory
+          - region name
+          - area
+        description: Territory name (Northwest, Northeast, Central, etc.)
+        expr: NAME
+        data_type: VARCHAR
+
+      - name: country_code
+        synonyms:
+          - country
+        description: Country code (US, CA, FR, DE, AU, GB)
+        expr: COUNTRYREGIONCODE
+        data_type: VARCHAR
+
+      - name: territory_group
+        synonyms:
+          - region
+          - geographic region
+          - group
+        description: Geographic grouping (North America, Europe, Pacific)
+        expr: "GROUP"
+        data_type: VARCHAR
+
+    measures:
+      - name: territory_sales_ytd
+        synonyms:
+          - ytd sales
+          - year to date sales
+        description: Territory sales year-to-date
+        expr: SALESYTD
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: territory_sales_last_year
+        synonyms:
+          - prior year sales
+          - last year sales
+        description: Territory sales from prior year
+        expr: SALESLASTYEAR
+        data_type: NUMBER
+        default_aggregation: sum
+
+  - name: sales_persons
+    description: >
+      Sales representatives with their quotas, bonuses, commission rates,
+      and sales performance metrics.
+    base_table:
+      database: ADVENTUREWORKS
+      schema: SALES
+      table: SALESPERSON
+    primary_key:
+      columns:
+        - BUSINESSENTITYID
+    dimensions:
+      - name: sales_person_id
+        synonyms:
+          - rep id
+          - salesperson id
+        description: Unique identifier for each sales person (links to Person table)
+        expr: BUSINESSENTITYID
+        data_type: NUMBER
+
+      - name: territory_id
+        description: Territory assigned to sales person
+        expr: TERRITORYID
+        data_type: NUMBER
+
+    measures:
+      - name: sales_quota
+        synonyms:
+          - quota
+          - target
+        description: Projected yearly sales quota
+        expr: SALESQUOTA
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: bonus
+        synonyms:
+          - bonus amount
+        description: Bonus amount earned
+        expr: BONUS
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: commission_pct
+        synonyms:
+          - commission rate
+          - commission percentage
+        description: Commission percentage earned on sales
+        expr: COMMISSIONPCT
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: rep_sales_ytd
+        synonyms:
+          - ytd sales
+          - year to date sales
+        description: Sales person's year-to-date sales
+        expr: SALESYTD
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: rep_sales_last_year
+        synonyms:
+          - prior year sales
+          - last year sales
+        description: Sales person's prior year sales
+        expr: SALESLASTYEAR
+        data_type: NUMBER
+        default_aggregation: sum
+
+relationships:
+  - name: order_to_details
+    left_table: sales_orders
+    right_table: order_details
+    relationship_columns:
+      - left_column: order_id
+        right_column: order_id
+    join_type: left_outer
+    relationship_type: one_to_many
+
+  - name: order_details_to_products
+    left_table: order_details
+    right_table: products
+    relationship_columns:
+      - left_column: product_id
+        right_column: product_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+  - name: products_to_subcategories
+    left_table: products
+    right_table: product_subcategories
+    relationship_columns:
+      - left_column: product_subcategory_id
+        right_column: subcategory_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+  - name: subcategories_to_categories
+    left_table: product_subcategories
+    right_table: product_categories
+    relationship_columns:
+      - left_column: category_id
+        right_column: category_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+  - name: orders_to_customers
+    left_table: sales_orders
+    right_table: customers
+    relationship_columns:
+      - left_column: customer_id
+        right_column: customer_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+  - name: customers_to_persons
+    left_table: customers
+    right_table: persons
+    relationship_columns:
+      - left_column: person_id
+        right_column: person_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+  - name: orders_to_territories
+    left_table: sales_orders
+    right_table: sales_territories
+    relationship_columns:
+      - left_column: territory_id
+        right_column: territory_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+  - name: orders_to_sales_persons
+    left_table: sales_orders
+    right_table: sales_persons
+    relationship_columns:
+      - left_column: sales_person_id
+        right_column: sales_person_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+  - name: sales_persons_to_persons
+    left_table: sales_persons
+    right_table: persons
+    relationship_columns:
+      - left_column: sales_person_id
+        right_column: person_id
+    join_type: left_outer
+    relationship_type: one_to_one
+
+  - name: customers_to_territories
+    left_table: customers
+    right_table: sales_territories
+    relationship_columns:
+      - left_column: territory_id
+        right_column: territory_id
+    join_type: left_outer
+    relationship_type: many_to_one
+
+verified_queries:
+  - name: total_revenue
+    question: What is the total revenue?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT SUM(LINETOTAL) AS total_revenue
+      FROM ADVENTUREWORKS.SALES.SALESORDERDETAIL
+
+  - name: revenue_by_year
+    question: What is the revenue by year?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        YEAR(d.MODIFIEDDATE) AS year,
+        SUM(d.LINETOTAL) AS revenue
+      FROM ADVENTUREWORKS.SALES.SALESORDERDETAIL d
+      GROUP BY YEAR(d.MODIFIEDDATE)
+      ORDER BY year
+
+  - name: monthly_revenue_trend
+    question: Show me monthly revenue trend
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        DATE_TRUNC('MONTH', d.MODIFIEDDATE) AS month,
+        SUM(d.LINETOTAL) AS revenue
+      FROM ADVENTUREWORKS.SALES.SALESORDERDETAIL d
+      GROUP BY DATE_TRUNC('MONTH', d.MODIFIEDDATE)
+      ORDER BY month
+
+  - name: top_products_by_revenue
+    question: What are the top 10 products by revenue?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        p.NAME AS product_name,
+        SUM(d.LINETOTAL) AS revenue,
+        SUM(d.ORDERQTY) AS units_sold
+      FROM ADVENTUREWORKS.SALES.SALESORDERDETAIL d
+      JOIN ADVENTUREWORKS.PRODUCTION.PRODUCT p ON d.PRODUCTID = p.PRODUCTID
+      GROUP BY p.NAME
+      ORDER BY revenue DESC
+      LIMIT 10
+
+  - name: revenue_by_category
+    question: What is the revenue by product category?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        c.NAME AS category,
+        SUM(d.LINETOTAL) AS revenue
+      FROM ADVENTUREWORKS.SALES.SALESORDERDETAIL d
+      JOIN ADVENTUREWORKS.PRODUCTION.PRODUCT p ON d.PRODUCTID = p.PRODUCTID
+      JOIN ADVENTUREWORKS.PRODUCTION.PRODUCTSUBCATEGORY sc ON p.PRODUCTSUBCATEGORYID = sc.PRODUCTSUBCATEGORYID
+      JOIN ADVENTUREWORKS.PRODUCTION.PRODUCTCATEGORY c ON sc.PRODUCTCATEGORYID = c.PRODUCTCATEGORYID
+      GROUP BY c.NAME
+      ORDER BY revenue DESC
+
+  - name: revenue_by_territory
+    question: What is the revenue by sales territory?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        t.NAME AS territory,
+        t."GROUP" AS region,
+        SUM(h.TOTALDUE) AS revenue
+      FROM ADVENTUREWORKS.SALES.SALESORDERHEADER h
+      JOIN ADVENTUREWORKS.SALES.SALESTERRITORY t ON h.TERRITORYID = t.TERRITORYID
+      GROUP BY t.NAME, t."GROUP"
+      ORDER BY revenue DESC
+
+  - name: order_count_by_month
+    question: How many orders per month?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        DATE_TRUNC('MONTH', MODIFIEDDATE) AS month,
+        COUNT(*) AS order_count
+      FROM ADVENTUREWORKS.SALES.SALESORDERHEADER
+      GROUP BY DATE_TRUNC('MONTH', MODIFIEDDATE)
+      ORDER BY month
+
+  - name: average_order_value
+    question: What is the average order value?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        AVG(TOTALDUE) AS avg_order_value
+      FROM ADVENTUREWORKS.SALES.SALESORDERHEADER
+
+  - name: online_vs_offline_sales
+    question: Compare online vs offline sales
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        CASE WHEN ONLINEORDERFLAG THEN 'Online' ELSE 'Sales Rep' END AS channel,
+        COUNT(*) AS order_count,
+        SUM(TOTALDUE) AS revenue
+      FROM ADVENTUREWORKS.SALES.SALESORDERHEADER
+      GROUP BY ONLINEORDERFLAG
+      ORDER BY revenue DESC
+
+  - name: top_sales_reps
+    question: Who are the top sales representatives?
+    verified_at: 1700000000
+    verified_by: admin
+    sql: |
+      SELECT 
+        CONCAT(pr.FIRSTNAME, ' ', pr.LASTNAME) AS sales_rep,
+        t.NAME AS territory,
+        SUM(h.TOTALDUE) AS revenue,
+        COUNT(h.SALESORDERID) AS orders
+      FROM ADVENTUREWORKS.SALES.SALESORDERHEADER h
+      JOIN ADVENTUREWORKS.SALES.SALESPERSON sp ON h.SALESPERSONID = sp.BUSINESSENTITYID
+      JOIN ADVENTUREWORKS.PERSON.PERSON pr ON sp.BUSINESSENTITYID = pr.BUSINESSENTITYID
+      LEFT JOIN ADVENTUREWORKS.SALES.SALESTERRITORY t ON sp.TERRITORYID = t.TERRITORYID
+      GROUP BY CONCAT(pr.FIRSTNAME, ' ', pr.LASTNAME), t.NAME
+      ORDER BY revenue DESC

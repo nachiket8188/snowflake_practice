@@ -1,6 +1,6 @@
 USE DATABASE SNOWFLAKE_PRACTICE_DEV;
 
-USE SCHEMA R
+USE SCHEMA RAW;
 
 call sp_copy_into_dynamic();
 
