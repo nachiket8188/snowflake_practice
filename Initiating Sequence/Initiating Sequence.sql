@@ -40,6 +40,8 @@ CREATE OR REPLACE GIT REPOSITORY SNOWFLAKE_PRACTICE_DEV.RAW.snowflake_practice
     ORIGIN = 'https://github.com/nachiket8188/snowflake_practice.git'
     GIT_CREDENTIALS = my_git_secret;
 
+SHOW GIT REPOSITORIES IN ACCOUNT;
+
 select getdate();
 
 select localtime();
