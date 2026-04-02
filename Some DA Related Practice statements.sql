@@ -943,3 +943,36 @@ QUALIFY
 
 /* ------------------------------------------------------------------------ */
 
+/* Assume a table structure like below - 
+
+"Team
+----
+India
+Pakistan
+Srilanka
+Australia
+
+Write SQL to generate output like below - 
+
+Output :
+----
+India VS Pakistan
+India VS Srilanka
+India VS Australia
+Pakistan VS Srilanka
+Pakistan VS Australia
+Srilanka VS Australia"
+
+*/
+
+CREATE TABLE TEAMS (Team VARCHAR);
+
+INSERT INTO TEAMS VALUES('India'), ('Pakistan'), ('Srilanka'), ('Australia');
+
+select * from TEAMS;
+
+select t1.team || ' VS ' || t2.team
+from TEAMS t1, TEAMS t2
+where t1.team <> t2.team
+and t1.team < t2.team
+order by 1;
