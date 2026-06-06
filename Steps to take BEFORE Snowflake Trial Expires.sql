@@ -4,7 +4,7 @@
 SHOW GIT REPOSITORIES IN ACCOUNT;
 
 /* To backup as much as database objects as possible with their DDLs */
-SELECT GET_DDL('database', 'UTIL_DB', true);
+/* SELECT GET_DDL('database', 'UTIL_DB', true); */
 
 /* Output of above query for different DBs is pasted below. */
 
@@ -65,11 +65,13 @@ SELECT
     REGION,
     RoundToWhole(avg_price_per_unit) AS rounded_avg_price_per_unit
 FROM TABLE(AvgPricePerUnitProductPerSale());
+
 CREATE OR REPLACE FILE FORMAT NICK_DB_SI.RETAIL.SWT_CSVFORMAT
 	TYPE = csv
 	SKIP_HEADER = 1
 	FIELD_OPTIONALLY_ENCLOSED_BY = '\"'
 ;
+
 CREATE OR REPLACE FUNCTION NICK_DB_SI.RETAIL.AVGPRICEPERUNITPRODUCTPERSALE()
 RETURNS TABLE ("DATE" DATE, "REGION" VARCHAR, "PRODUCT_ID" NUMBER(38,0), "UNITS_SOLD" NUMBER(38,0), "SALES_AMOUNT" NUMBER(38,2), "AVG_PRICE_PER_UNIT" NUMBER(38,8))
 LANGUAGE SQL
@@ -84,6 +86,7 @@ AS '
     FROM SALES
     WHERE UNITS_SOLD > 0
 ';
+
 CREATE OR REPLACE FUNCTION NICK_DB_SI.RETAIL.ROUNDTOWHOLE("VALUE" FLOAT)
 RETURNS NUMBER(38,0)
 LANGUAGE PYTHON
@@ -95,10 +98,11 @@ def round_value(value):
         return None
     return round(value, 0)
 ';
+
 create or replace cortex search service NICK_DB_SI.RETAIL.SUPPORT_CASES
 	ON TRANSCRIPT
 	attributes TITLE,PRODUCT
-	warehouse='SNOWFLAKE_LEARNING_WH'
+	warehouse='COMPUTE_WH'
 	target_lag='1 hour'
 	refresh_mode=INCREMENTAL
 	as (
@@ -857,7 +861,7 @@ create or replace TABLE AI_POC.CORTEX_SEARCH.BOOK_CONTENT_TEXT (
 create or replace cortex search service AI_POC.CORTEX_SEARCH.BOOK_SEARCH_SERVICE
 	ON PAGE_DESCRIPTION_STRING
 	attributes FILE_NAME
-	warehouse='AI_WAREHOUSE'
+	warehouse='COMPUTE_WH'
 	target_lag='30 days'
 	refresh_mode=INCREMENTAL
 	as (
@@ -918,11 +922,15 @@ create or replace TABLE INTERVIEW_PREP.DATA_ANALYSIS.SALES (
 	SALE_DATE DATE,
 	AMOUNT NUMBER(38,0)
 );
+
+/*
 create or replace streamlit INTERVIEW_PREP.DATA_ANALYSIS.MN0T1CXDQCC1267M/versions/live'
 	main_file='streamlit_app.py'
 	query_warehouse='COMPUTE_WH'
 	comment='{"lastUpdatedUser":"2687872849961","lastUpdatedTime":1765907661104}'
 	title='My First Streamlit App within Snowflake';
+*/
+
 create or replace schema INTERVIEW_PREP.PUBLIC;
 
 /* 5. SNOWFLAKE_PRACTICE_DEV :  This database was created to facilitate the POCs surrounding Snowflake purely. Specifically, like POC 1 and POC 2. It should be used in future for similar purposes.  */
@@ -1227,7 +1235,7 @@ BEGIN
     END FOR;
 RETURN ''Success !!'';
 END';
-create or replace pipe SNOWFLAKE_PRACTICE_DEV.RAW.MYPIPE_FOR_SNOWPIPE_DEMO auto_ingest=true as COPY INTO SNOWFLAKE_PRACTICE.PUBLIC.SUPERSTORE_SALES
+create or replace pipe SNOWFLAKE_PRACTICE_DEV.RAW.MYPIPE_FOR_SNOWPIPE_DEMO auto_ingest=true as COPY INTO SNOWFLAKE_PRACTICE_DEV.RAW.SUPERSTORE_SALES
   FROM @s2_stage_for_snowpipe;
 create or replace task SNOWFLAKE_PRACTICE_DEV.RAW.T_CHECK_MARKED_QUERIES
 	schedule='30 MINUTES'
@@ -1237,7 +1245,6 @@ create or replace task SNOWFLAKE_PRACTICE_DEV.RAW.T_EXECUTE_QUERY_KILL
 	after SNOWFLAKE_PRACTICE_DEV.RAW.T_CHECK_MARKED_QUERIES
 	when SYSTEM$GET_PREDECESSOR_RETURN_VALUE('SP_CHECK_FOR_QUERIES') = 'RUN_KILL'
 	as CALL SP_KILL_QUERY();
-create or replace schema SNOWFLAKE_PRACTICE_DEV.STAGING;
 
 /* 6. SNOWFLAKE_PRACTICE_QA : This database was created by cloning from SNOWFLAKE_PRACTICE_DEV, I believe. This database and the SNOWFLAKE_PRACTICE_PROD database were created to mimic environments in Snowflake accounts set up in real companies to practice code promotion and so on. */
 
@@ -1251,7 +1258,7 @@ create or replace schema SNOWFLAKE_PRACTICE_QA.RAW;
 
 create or replace pipe SNOWFLAKE_PRACTICE_QA.RAW.MYPIPE_FOR_SNOWPIPE_DEMO auto_ingest=true as COPY INTO SNOWFLAKE_PRACTICE.PUBLIC.SUPERSTORE_SALES
   FROM @s2_stage_for_snowpipe;
-create or replace schema SNOWFLAKE_PRACTICE_QA.STAGING;
+
 
 /* 7. SNOWFLAKE_PRACTICE_PROD : This database was created by cloning from SNOWFLAKE_PRACTICE_DEV, I believe. This database and the SNOWFLAKE_PRACTICE_QA database were created to mimic environments in Snowflake accounts set up in real companies to practice code promotion and so on. */
 
@@ -1265,9 +1272,10 @@ create or replace schema SNOWFLAKE_PRACTICE_PROD.RAW;
 
 create or replace pipe SNOWFLAKE_PRACTICE_PROD.RAW.MYPIPE_FOR_SNOWPIPE_DEMO auto_ingest=true as COPY INTO SNOWFLAKE_PRACTICE.PUBLIC.SUPERSTORE_SALES
   FROM @s2_stage_for_snowpipe;
-create or replace schema SNOWFLAKE_PRACTICE_PROD.STAGING;
 
 /* 8. UTIL_DB :  This database was created during the 2025 Snowflake Build event. It holds the API integration for DORA assessment among other things. */
+
+/*
 
 create or replace database UTIL_DB;
 
@@ -1283,6 +1291,8 @@ RETURNS VARIANT
 API_INTEGRATION = "DORA_API_INTEGRATION"
 CONTEXT_HEADERS = (CURRENT_TIMESTAMP,CURRENT_ACCOUNT,CURRENT_STATEMENT,CURRENT_ACCOUNT_NAME)
 AS 'https://awy6hshxy4.execute-api.us-west-2.amazonaws.com/dev/edu_dora/greeting';
+
+*/
 
 -- Network policies, resource monitors, warehouses, roles, users
 SHOW INTEGRATIONS;
@@ -1327,3 +1337,7 @@ COPY INTO @my_backup_stage/PRODUCT_SALES/ FROM DATA_ANALYSIS.PRODUCT_SALES FILE_
 
 snow stage copy @my_backup_stage/ . --recursive --connection trial_acct_1;
 
+SELECT *, TOKEN_CREDITS AS TOTAL_CREDITS
+FROM SNOWFLAKE.ACCOUNT_USAGE.CORTEX_CODE_SNOWSIGHT_USAGE_HISTORY
+WHERE USAGE_TIME >= DATEADD('day', -1, CURRENT_TIMESTAMP())
+ORDER BY TOTAL_CREDITS DESC;

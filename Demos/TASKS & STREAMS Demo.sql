@@ -1,7 +1,7 @@
 /* All scripts in this file are for the purpose of demonstrating understanding of TASKS & STREAMS features in Snowflake. */
 
 /* Initial script I ran to check if salesorderid is indeed Primary Key for salesOrderHeader table */
-select top 10 * from sales.salesorderheader order by salesorderid desc
+select top 10 * from sales.salesorderheader -- order by salesorderid desc
 where salesorderid = 75084;
 
 /* To check that there can be multiple occurrences of same salesorderid in salesOrderDetail table */
@@ -212,3 +212,5 @@ values
 select * from table(INFORMATION_SCHEMA.TASK_HISTORY()) order by completed_time desc;
 
 select * from "2014_top_salespeople" order by salesperson_rank;
+
+select current_date();

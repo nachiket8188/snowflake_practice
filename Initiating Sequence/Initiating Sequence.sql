@@ -21,15 +21,19 @@ SHOW USERS;
 
 /* Configure and enable Github Repo. access to replicate work from previous Snowflake Trial Account. */
 
-CREATE OR REPLACE SECRET SNOWFLAKE_PRACTICE_DEV.RAW.my_git_secret
+/* DO NOT use fully-qualified name for SECRET below as that could lead to issue while running subsequent commands. */
+CREATE OR REPLACE SECRET MY_GIT_SECRET
   TYPE = password
   USERNAME = 'nachiket8188'
   PASSWORD = '*****************';
-  /* 
+
+/* 
   The password is not password to the Github account rather a PAT (Personal Access Token) you generate for that account. The PAT from previous usage might not work and may result in "Failed to access the Git Repository. Operation 'clone' is not authorized." error. If that happens, generate a new PAT in Github Developer Settings and use that one.
-  */
-  
-create or replace API INTEGRATION SNOWFLAKE_PRACTICE_DEV.RAW.git_api_integration
+*/
+
+/* DO NOT use fully-qualified name for API INTEGRATION below as that could lead to issue while running subsequent commands. An API Integration is an account-level object. No need to specify fully-qualified name while creating it. */
+
+create or replace API INTEGRATION GIT_API_INTEGRATION
     API_PROVIDER = git_https_api
     API_ALLOWED_PREFIXES = ('https://github.com/nachiket8188')
     ALLOWED_AUTHENTICATION_SECRETS = (my_git_secret)
@@ -40,7 +44,9 @@ CREATE OR REPLACE GIT REPOSITORY SNOWFLAKE_PRACTICE_DEV.RAW.snowflake_practice
     ORIGIN = 'https://github.com/nachiket8188/snowflake_practice.git'
     GIT_CREDENTIALS = my_git_secret;
 
-SHOW GIT REPOSITORIES IN ACCOUNT;
+/* Despite running all the previous commands properly (without fully qualified names and so on, to avoid running into issues), 
+the Snowsight UI still has trouble showing the newly integrated GitHub repo in the Workspaces section.
+The workaround for this is to click the plus button for Workspaces and select "Create new Git workspace" and follow the steps. */
 
 select getdate();
 

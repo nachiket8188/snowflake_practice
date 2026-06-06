@@ -976,3 +976,65 @@ from TEAMS t1, TEAMS t2
 where t1.team <> t2.team
 and t1.team < t2.team
 order by 1;
+
+/* ------------------------------------------------------------------------ */
+/* Question (Hexaware Interview): For each customer, identify their two most recent credit transactions and compute the difference between the latest and the previous credit amount, returning one row per customer. */
+
+CREATE OR REPLACE TEMPORARY TABLE transactions (
+    cust_id      INT,
+    credit_amt   NUMBER(10, 2),
+    txn_date     DATE
+);
+
+INSERT INTO transactions (cust_id, credit_amt, txn_date) VALUES
+    -- Customer 101: 3 records — oldest should be ignored
+    (101, 4200.00, '2026-01-15'),
+    (101, 5800.00, '2026-02-20'),
+    (101, 7100.00, '2026-03-30'),
+
+    -- Customer 102: 2 records
+    (102, 1500.00, '2026-02-01'),
+    (102, 3200.00, '2026-03-18'),
+
+    -- Customer 103: 3 records — oldest should be ignored
+    (103, 9500.00, '2026-01-10'),
+    (103, 8800.00, '2026-02-25'),
+    (103, 11000.00, '2026-04-05'),
+
+    -- Customer 104: 2 records — diff is negative (credit dropped)
+    (104, 6700.00, '2026-03-01'),
+    (104, 4900.00, '2026-04-12'),
+
+    -- Customer 105: 3 records — oldest should be ignored
+    (105, 2100.00, '2026-01-22'),
+    (105, 3400.00, '2026-03-08'),
+    (105, 5600.00, '2026-04-19'),
+
+    -- Customer 106: 2 records
+    (106, 800.00,  '2026-02-14'),
+    (106, 1250.00, '2026-04-01'),
+
+    -- Customer 107: 2 records — diff is negative (credit dropped)
+    (107, 15000.00, '2026-03-05'),
+    (107, 12300.00, '2026-04-28');
+
+select
+    *
+from transactions;
+
+with base_cte as (
+    select
+        t1.cust_id, t1.credit_amt, t1.txn_date,
+        ROW_NUMBER() OVER (PARTITION BY cust_id ORDER BY txn_date desc) as txn_rank
+    from transactions t1
+    QUALIFY txn_rank <= 2
+)
+select 
+    cust_id,
+    MAX(CASE WHEN txn_rank = 1 THEN credit_amt END) curr_amt,
+    MAX(CASE WHEN txn_rank = 2 THEN credit_amt END) prev_amt,
+    (curr_amt - prev_amt) as diff
+from base_cte
+group by cust_id;
+
+select current_date();
