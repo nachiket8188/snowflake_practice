@@ -69,4 +69,7 @@ FROM snowflake.account_usage.secrets
 WHERE secret_name ILIKE '%git%' 
    OR comment ILIKE '%git%';
 
-Temp 
+select * from snowflake.account_usage.access_history
+where user_name;
+
+select * from snowflake.account_usage.database_storage_usage_history;

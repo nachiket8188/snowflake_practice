@@ -1037,4 +1037,256 @@ select
 from base_cte
 group by cust_id;
 
-select current_date();
+/* ------------------------------------------------------------------------ */
+/* Question : You have a table called page_views with columns user_id, page_name, and view_time (timestamp).
+Write a query that returns, for each user, their first page visited and their last page visited — one row per user. */
+
+CREATE OR REPLACE TEMPORARY TABLE page_views (
+    user_id    INTEGER,
+    page_name  VARCHAR(50),
+    view_time  TIMESTAMP
+);
+
+INSERT INTO page_views (user_id, page_name, view_time) VALUES
+    (1, 'home',     '2023-07-01 09:00:00'),
+    (1, 'products', '2023-07-01 09:05:00'),
+    (1, 'checkout', '2023-07-01 09:12:00'),
+    (2, 'home',     '2023-07-01 10:00:00'),
+    (2, 'about',    '2023-07-01 10:02:00'),
+    (3, 'home',     '2023-07-01 11:00:00');
+
+select * from page_views;
+
+select distinct
+    user_id,
+    FIRST_VALUE(page_name) OVER(PARTITION BY USER_ID ORDER BY view_time ASC) as first_page,
+    LAST_VALUE(page_name) OVER(PARTITION BY USER_ID ORDER BY view_time ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as last_page
+from page_views;
+
+/* ------------------------------------------------------------------------ */
+
+/* Question : (Seat Availability Problem from StrataScratch (https://platform.stratascratch.com/coding/2088-seat-availability)). */
+
+/* Output only distinct pairs of seats in two columns such that the seat with the lower number is always in the first column and the one with the higher number is in the second column. */
+
+-- ==========================================
+-- TABLE 1: Physical Theater Architecture Mapping
+-- ==========================================
+CREATE OR REPLACE TEMPORARY TABLE THEATER_SEATMAP (
+    SEAT_NUMBER INT,
+    SEAT_LEFT INT,
+    SEAT_RIGHT INT
+);
+
+-- ==========================================
+-- TABLE 2: Real-time Live Seat Booking Availability
+-- ==========================================
+CREATE OR REPLACE TEMPORARY TABLE THEATER_AVAILABILITY (
+    SEAT_NUMBER INT,
+    IS_AVAILABLE INT
+);
+
+-- ==========================================
+-- POPULATING 25-ROW DATASET
+-- Simulates physical rows with broken IDs & realistic bookings
+-- ==========================================
+INSERT INTO THEATER_SEATMAP (SEAT_NUMBER, SEAT_LEFT, SEAT_RIGHT) VALUES
+(1,  NULL, 2),    -- Row A Start
+(2,  1,    3),
+(3,  2,    4),
+(4,  3,    NULL), -- Row A End (Aisle Break)
+(11, NULL, 12),   -- Row B Start (Notice the ID jump!)
+(12, 11,   13),
+(13, 12,   14),
+(14, 13,   15),
+(15, 14,   NULL), -- Row B End
+(21, NULL, 22),   -- Row C Start
+(22, 21,   23),
+(23, 22,   24),
+(24, 23,   25),
+(25, 24,   NULL), -- Row C End
+(31, NULL, 32),   -- Row D Start
+(32, 31,   33),
+(33, 32,   34),
+(34, 33,   35),
+(35, 34,   NULL), -- Row D End
+(41, NULL, 42),   -- Row E Start
+(42, 41,   43),
+(43, 42,   44),
+(44, 43,   45),
+(45, 44,   NULL); -- Row E End
+
+INSERT INTO THEATER_AVAILABILITY (SEAT_NUMBER, IS_AVAILABLE) VALUES
+(1,  1), (2,  0), (3,  1), (4,  1),  -- Row A Mix
+(11, 1), (12, 1), (13, 1), (14, 0), (15, 1), -- Row B (11,12,13 free!)
+(21, 0), (22, 0), (23, 1), (24, 1), (25, 1), -- Row C (23,24,25 free!)
+(31, 1), (32, 0), (33, 1), (34, 0), (35, 1), -- Row D (Isolated seats)
+(41, 1), (42, 1), (43, 1), (44, 1), (45, 0); -- Row E (41,42,43,44 free!);
+
+select * from theater_availability;
+
+select * from theater_seatmap;
+
+select distinct
+    a.seat_number,
+    s.seat_number
+from
+    theater_availability a,
+    theater_seatmap s
+where
+    a.is_available = 1
+    AND (
+        1 = (
+            select
+                MIN(t.is_available)
+            from
+                theater_availability t
+            where
+                t.seat_number = s.seat_number
+        )
+    )
+    and a.seat_number = s.seat_left
+order by
+    1;
+
+/* Question : NiCE Inteerview question (tricky one; but good to learn the fundamentals correctly.) */
+/* What would be the row count in the result set if I were to perform an inner join, a left join, a right join, and a full outer join?  */
+
+CREATE OR REPLACE TEMPORARY TABLE table_a (id INTEGER);
+CREATE OR REPLACE TEMPORARY TABLE table_b (id INTEGER);
+
+INSERT INTO table_a (id) VALUES (1), (0), (1), (1), (NULL);
+INSERT INTO table_b (id) VALUES (1), (1), (1), (NULL), (NULL), (0);
+
+select * from table_a
+inner join table_b on table_a.ID = table_b.ID;
+
+select * from table_a
+LEFT join table_b on table_a.ID = table_b.ID;
+
+select * from table_a
+RIGHT join table_b on table_a.ID = table_b.ID;
+
+select * from table_a
+full outer join table_b on table_a.ID = table_b.ID;
+
+/* ------------------------------------------------------------------------ */
+
+/* Question : Given three tables (Products, Stocks, Returns), write a query that shows:
+   (a) Product ID
+   (b) Product Name
+   (c) Total stock for that product
+   (d) Total number of times the product was returned
+   Data covers May, June, and July 2023, but output should only contain data for July 2023. */
+
+CREATE OR REPLACE TEMPORARY TABLE products (
+    id INTEGER,
+    title VARCHAR(100)
+);
+
+CREATE OR REPLACE TEMPORARY TABLE stocks (
+    product_id INTEGER,
+    units INTEGER
+);
+
+CREATE OR REPLACE TEMPORARY TABLE returns (
+    product_id INTEGER,
+    returned_at TIMESTAMP
+);
+
+/* Sample dataset 1. Works with query v1 below but isn't 100% accurate. */
+
+INSERT INTO products (id, title) VALUES
+(1, 'Wireless Mouse'),
+(2, 'Mechanical Keyboard'),
+(3, 'USB-C Hub'),
+(4, 'Monitor Stand'),
+(5, 'Webcam HD');
+
+INSERT INTO stocks (product_id, units) VALUES
+(1, 150),
+(2, 80),
+(3, 200),
+(4, 60),
+(5, 120);
+
+INSERT INTO returns (product_id, returned_at) VALUES
+-- May 2023
+(1, '2023-05-03 10:15:00'),
+(2, '2023-05-10 14:30:00'),
+(3, '2023-05-18 09:00:00'),
+(1, '2023-05-22 16:45:00'),
+-- June 2023
+(2, '2023-06-01 11:20:00'),
+(4, '2023-06-12 08:50:00'),
+(1, '2023-06-19 13:10:00'),
+(3, '2023-06-25 17:30:00'),
+(5, '2023-06-28 10:00:00'),
+-- July 2023
+(1, '2023-07-02 09:30:00'),
+(1, '2023-07-15 14:00:00'),
+(2, '2023-07-05 11:45:00'),
+(3, '2023-07-10 16:20:00'),
+(3, '2023-07-22 08:15:00'),
+(3, '2023-07-29 12:00:00'),
+(5, '2023-07-18 10:30:00');
+
+/* Sample dataset 2. Works with query both query versions below. */
+
+-- Products
+INSERT INTO products (id, title) VALUES
+(1, 'Laptop'),
+(2, 'Mouse'),
+(3, 'Keyboard');
+
+-- Stocks
+INSERT INTO stocks (product_id, units) VALUES
+(1, 100),
+(2, 50),
+(3, 75);
+
+-- Returns: Laptop returned in July, Mouse returned in June only,
+-- Keyboard never returned
+INSERT INTO returns (product_id, returned_at) VALUES
+(1, '2023-07-05 10:00:00'),
+(1, '2023-07-18 14:30:00'),
+(2, '2023-06-12 09:00:00'),   -- June only, NOT July
+(2, '2023-06-28 11:00:00');   -- June only, NOT July
+-- Keyboard has no returns at all
+
+select * from products;
+
+select * from stocks;
+
+select * from returns;
+
+/* Query v1 */
+
+select 
+    p.id, 
+    p.title,
+    sum(s.units) total_stock,
+    COUNT(r.product_id) times_returned
+from products p
+inner join stocks s on p.id = s.product_id
+inner join returns r on p.id = r.product_id
+where TO_CHAR(r.returned_at, 'YYYY-MM') = '2023-07'
+group by p.id, p.title
+order by 1;
+
+/* Query v2 */
+
+SELECT
+    p.id                        AS product_id,
+    p.title                     AS product_name,
+    COALESCE(SUM(s.units), 0)   AS total_stock,
+    COUNT(r.product_id)         AS total_returns
+FROM products p
+LEFT JOIN stocks s
+    ON p.id = s.product_id
+LEFT JOIN returns r
+    ON p.id = r.product_id
+    AND DATE_TRUNC('month', r.returned_at) = '2023-07-01'
+GROUP BY
+    p.id,
+    p.title;
