@@ -1,0 +1,52 @@
+name: Snowflake Dev Deploy
+
+on:
+  workflow_dispatch: 
+  push:
+    branches:
+      - understanding_CICD
+
+jobs:
+  deploy-dev:
+    name: Deploy to Snowflake DEV
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install schemachange
+        run: pip install schemachange==4.3.3
+
+      - name: Write Private Key file
+        run: |
+          mkdir -p ~/.snowflake
+          echo "$SNOWFLAKE_PRIVATE_KEY" > ~/.snowflake/rsa_key.p8
+          chmod 600 ~/.snowflake/rsa_key.p8
+        env:
+          SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: Deploy Migrations to Snowflake
+        run: |
+          schemachange deploy \
+            -f Demos/poc_06_CI_CD/migrations \
+            -c DEMO_CICD_DB.SCHEMACHANGE.CHANGE_HISTORY \
+            -a "$SNOWFLAKE_ACCOUNT" \
+            -u "$SNOWFLAKE_USER" \
+            -r "$SNOWFLAKE_ROLE" \
+            -w "$SNOWFLAKE_WAREHOUSE" \
+            -d "$SNOWFLAKE_DATABASE" \
+            --snowflake-authenticator snowflake_jwt \
+            --snowflake-private-key-file ~/.snowflake/rsa_key.p8
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_PRIVATE_KEY_FILE_PWD: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_FILE_PWD }}

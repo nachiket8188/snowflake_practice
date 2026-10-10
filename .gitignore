@@ -1,3 +1,4 @@
 ./Rough Work.sql
 .DS_Store
 .gitignore
+/Demos/poc_06_CI_CD/venv/
