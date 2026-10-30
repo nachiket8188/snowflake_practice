@@ -1,15 +1,25 @@
-name: Snowflake Dev Deploy
+name: Snowflake To Deploy
 
 on:
   workflow_dispatch: 
+    inputs: 
+      target_environment: 
+        description: Select deployment environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
   push:
     branches:
       - understanding_CICD
+      - qa
 
 jobs:
   deploy-dev:
     name: Deploy to Snowflake DEV
     runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || github.ref_name == 'qa' && 'qa' || 'dev' }}
 
     steps:
       - name: Checkout repository
@@ -35,7 +45,7 @@ jobs:
         run: |
           schemachange deploy \
             -f Demos/poc_06_CI_CD/migrations \
-            -c DEMO_CICD_DB.SCHEMACHANGE.CHANGE_HISTORY \
+            -c "${SNOWFLAKE_DATABASE}.SCHEMACHANGE.CHANGE_HISTORY" \
             -a "$SNOWFLAKE_ACCOUNT" \
             -u "$SNOWFLAKE_USER" \
             -r "$SNOWFLAKE_ROLE" \
